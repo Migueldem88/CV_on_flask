@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block sub_content %}
+
+<a href="/test/">Test</a>
+
+{% if session %}
+<div class = "text-right">
+    <a href="logout/">Logout</a>
+</div>
+
+
+
+<a href="/add-new/">Add new entry</a>
+
+<div>
+    <div class = "container text-center">
+        <h1>List of portfolios</h1>
+    </div>
+    <hr>
+    {% if entries %}
+    {%for en in entries%}
+    <h1><a href="/cvs/{{en['CV_id']}}">{{ en['FirstLastName'] }}</a></h1>
+    <h2>
+        {{en['profession']}}
+        <br>
+        Age: {{en['age']}}
+    </h2>
+        <hr>
+    {% endfor %}
+    {% else %}
+    <h1>No entries yet</h1>
+    {% endif %}
+</div>
+<hr>
+
+{% else %}
+
+<div class = "text-right">
+    <a href="register/">Sign in</a>| <a href="login/">Login</a>
+</div>
+<div class = "container text-center">
+    <h1>Welcome to the portfolios site!</h1>
+    <h4>Sign in o Log in to continue</h4>
+</div>
+
+
+
+{% endif %}
+
+
+{% endblock %}

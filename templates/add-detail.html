@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block sub_content %}
+
+{% if session %}
+<div class = "text-center">
+    <h1>Add detailed information</h1>
+</div>
+
+<form method="POST">
+    <div class="form-group">
+    <label for="Education">Education</label>
+    <input type="text" class="form-control" id="Education" name="Education" placeholder="Enter details about Education">
+  </div>
+     <div class="form-group">
+    <label for="Experience">Experience</label>
+    <input type="text" class="form-control" id="Experience" name="Experience" placeholder="Write about you experience">
+  </div>
+    <div class="form-group">
+    <label for="Skills">Skills</label>
+    <input type="text" class="form-control" id="Skills" name="Skills" placeholder="Write more about your skills">
+  </div>
+  <div class="form-group">
+    <label for="Additional_information">Additional information</label>
+    <input type="text" class="form-control" id="Additional_information" name="Additional_information" placeholder="Enter additional info">
+  </div>
+  <div class="form-group">
+    <label for="CV_id">CV_id </label>
+    <input type="text" class="form-control" id="CV_id" name="CV_id" placeholder="Enter CV_id (must correspond to CV number)">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+
+<h7>
+    <a href="/"> back to main page</a>
+</h7>
+
+{% else %}
+
+Please log in or sign in to proceed
+<a href="/register/">Sign in</a>| <a href="/login/">Login</a>
+
+{% endif %}
+
+{% endblock %}

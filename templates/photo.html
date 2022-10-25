@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block sub_content %}
+
+
+<div class = "container text-right">
+    <a href="/cvs/{{id}}"> Back</a>
+</div>
+<title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+
+    {% if filename %}
+	<div>
+		<img src="{{ url_for('display_image', filename=filename) }}">
+	</div>
+
+
+{% endif %}
+{% endblock %}

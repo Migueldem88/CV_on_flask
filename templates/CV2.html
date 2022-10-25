@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<a href="/delete-entry/{{cv['CV_id']}}"> delete entry</a>
+
+<div class = "container text-center">
+    <h1>Portfolio {{cv['CV_id']}}</h1>
+</div>
+
+<div class = "container text-right">
+<a href = "/">Back</a>
+    </div>
+
+<hr>
+<a href="/edit-general/{{cv['CV_id']}}"> edit general information</a>
+<table>
+  <tr>
+    <td><h2>Name: </h2></td>
+    <td>{{cv['FirstLastName'] | safe}}</td>
+  </tr>
+  <tr>
+    <td><h2>Age: </h2></td>
+    <td>{{cv['age'] | safe}}</td>
+  </tr>
+    <tr>
+    <td><h2>Email: </h2></td>
+    <td>{{cv['email'] | safe}}</td>
+  </tr>
+    <tr>
+    <td><h2>Phone number: </h2></td>
+    <td>{{cv['Tel'] | safe}}</td>
+  </tr>
+</table>
+<hr>
+<h3>Detailed information</h3><a href="/add-detail/{{cv['CV_id']}}"> Add detailed information </a>
+
+
+
+{% endblock %}

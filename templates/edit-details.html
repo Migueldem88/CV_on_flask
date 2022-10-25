@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if session %}
+<div class = "text-center">
+    <h1>Edit user's information</h1>
+</div>
+
+<form method="POST">
+
+    <div class="form-group">
+        <label for="Education">Education</label>
+        <textarea type="text" class="form-control" id="Education" name="Education">{{edit_form['Education']}}</textarea>
+    </div>
+
+
+    <div class="form-group">
+        <label for="Experience">Experience</label>
+        <textarea type="text" class="form-control" id="Experience" name="Experience">{{edit_form['Experience']}}</textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="Skills">Skills</label>
+        <input type="text" class="form-control" id="Skills" name="Skills" value="{{edit_form['Skills']}}">
+    </div>
+
+    <div class="form-group">
+        <label for="Additional_information">Additional information</label>
+        <input type="text" class="form-control" id="Additional_information" name="Additional_information" value="{{edit_form['Additional_information']}}">
+    </div>
+
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% else %}
+
+Please log in or sign in to proceed
+<a href="/register/">Sign in</a>| <a href="/login/">Login</a>
+
+{% endif %}
+
+{% endblock %}
