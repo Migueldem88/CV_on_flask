@@ -65,9 +65,7 @@ def register():
         cursor.close()
         flash('Registraton successful! please login','success')
         return redirect('/login')
-        # except:
-        #     flash('Error!!!!')
-        #     return render_template('register.html')
+
     return render_template('register.html')
 
 @app.route('/login/',methods=['GET','POST'])
@@ -82,14 +80,10 @@ def login():
             user = cursor.fetchone()
             if check_password_hash(user['password'],user_details['password']):
                 session['login'] = True
-                #print(session)
                 session['FL_name'] = user['FL_name']
                 session['email'] = user['email']
-                #session['Admin'] = user['Admin']
                 flash('Welcome' + session['FL_name'] + '!You have been successfully logged in','success')
-                #print(session)
-                # print(session['FL_name'])
-                # print(session['email'])
+
             else:
                 cursor.close
                 flash('Password is incorrect!','danger')
@@ -107,13 +101,10 @@ def login():
 @app.route('/add-new/',methods=['GET','POST'])
 def add_new():
     if request.method == 'POST':
-        #session_var_value = session.get('key')
         new_employee = request.form
         cursor = mysql.connection.cursor()
         FL_name = session['FL_name']
-        #try:
         define_admin = cursor.execute("SELECT * FROM users WHERE Admin = 1 and FL_name = %s",([FL_name]))
-        #print(define_admin)
         if define_admin:
             #admin = cursor.fetchone()
             cursor = mysql.connection.cursor()
@@ -132,24 +123,21 @@ def add_new():
 
 @app.route('/add-detail/<int:id>',methods=['GET','POST'])
 def add_detail(id):
-    #try:
     if request.method == 'POST':
         add_data = request.form
         cursor = mysql.connection.cursor()
         try:
             FL_name = session['FL_name']
             define_admin = cursor.execute("SELECT * FROM users WHERE Admin = 1 and FL_name = %s", ([FL_name]))
-            print(define_admin)
             if define_admin:
                 result_value = cursor.execute("SELECT * FROM general WHERE CV_id={}".format(id))
-                print(result_value)
                 if result_value > 0:
                     cv = cursor.fetchone()
                     cursor.execute("INSERT INTO detailed(Education,Experience,Skills, Additional_information, CV_id) VALUES (%s, %s, %s, %s, %s)",
                                        (add_data['Education'],add_data['Experience'],add_data['Skills'],
                                         add_data['Additional_information'],add_data['CV_id']))
 
-                    if add_data['CV_id'] == id:
+                    if int(add_data['CV_id']) == id:
                         mysql.connection.commit()
                         cursor.close()
                         flash('New entry added', 'success')
@@ -170,24 +158,23 @@ def add_detail(id):
     return render_template('add-detail.html')
 
 
-
-@app.route('/test/',methods=['GET','POST'])
-def test():
-    a = session['FL_name']
-
-    print(a)
-    return render_template('test.html')
-
-
 @app.route('/cvs/<int:id>')
 def cvs(id):
     cursor = mysql.connection.cursor()
     result_value = cursor.execute("SELECT * FROM detailed d INNER JOIN general g "
                                   "on d.CV_id = g.CV_id WHERE d.CV_id={}".format(id))
+
     if result_value>0:
         cv = cursor.fetchone()
-        img = os.path.join(app.config['IMAGE_FOLDER'], str(id) + '.jpg')
-        return render_template('CV.html', cv=cv, user_image=img)
+        quer = cursor.execute("SELECT Filename FROM files WHERE CV_id = {}".format(id))
+        res = cursor.fetchone()
+        if res:
+            print(res['Filename'])
+            img = os.path.join(app.config['IMAGE_FOLDER'], res['Filename'])
+            return render_template('CV.html', cv=cv, user_image=img)
+        else:
+            img = os.path.join(app.config['IMAGE_FOLDER'], 'no_image.jpg')
+            return render_template('CV.html', cv=cv, user_image=img)
 
     else:
         cursor = mysql.connection.cursor()
@@ -263,7 +250,7 @@ def edit_details(id):
         return render_template('edit-details.html', edit_form=edit_form)
 
 @app.route('/delete-entry/<int:id>')
-def delete_blog(id):
+def delete_post(id):
     cursor = mysql.connection.cursor()
     cursor.execute("DELETE FROM detailed WHERE CV_id ={}".format(id))
     mysql.connection.commit()
@@ -283,20 +270,10 @@ def delete_blog(id):
         flash('Only Admin has right to delete posts', 'danger')
         return redirect(url_for('index'))
 
-# def allowed_file(filename):
-#     return '.' in filename \
-#            and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-#
-# @app.route('/photo/', methods=['GET', 'POST'])
-
 def allowed_file(filename):
     return '.' in filename \
            and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-def new_name(filename):
-    #return filename.rsplit('.', 1)[1].lower()
-    return 'aaa'+'.'+filename.rsplit('.', 1)[1].lower()
 
 @app.route('/edit-photo/<int:id>', methods=['GET', 'POST'])
 def upload_file(id):
@@ -319,22 +296,22 @@ def upload_file(id):
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 filename = str(id) + '.' + filename.rsplit('.', 1)[1].lower()
+                cursor = mysql.connection.cursor()
+                try:
+                    cursor.execute(
+                        "INSERT INTO files(Filename, CV_id) VALUES (%s, %s)", (filename,id))
+                    mysql.connection.commit()
+                    cursor.close()
+                except:
+                    pass
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                #session['/static'] = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 flash('Success','success')
                 redirect("/cvs/<int:id>")
-                #return render_template('show_image.html',filename=filename)
+
         else:
             flash('Only Admin has right to upload fotos', 'danger')
             return redirect(url_for('index'))
     return render_template('photo.html',id=id)
-
-# @app.route("/cvs/<int:id>")
-# def Display_IMG(id):
-#     img = os.path.join(app.config['IMAGE_FOLDER'], str(id)+'.jpg')
-#     print(img)
-#     #return render_template("show_image.html", user_image = img)
-#     return render_template("CV.html",user_image=img)
 
 @app.route('/logout/')
 def logout():

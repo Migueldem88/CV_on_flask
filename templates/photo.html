@@ -2,6 +2,7 @@
 
 {% block sub_content %}
 
+{% if session %}
 
 <div class = "container text-right">
     <a href="/cvs/{{id}}"> Back</a>
@@ -17,7 +18,12 @@
 	<div>
 		<img src="{{ url_for('display_image', filename=filename) }}">
 	</div>
+    {% endif %}
 
+{% else %}
+
+Please log in or sign in to proceed
+<a href="/register/">Sign in</a>| <a href="/login/">Login</a>
 
 {% endif %}
 {% endblock %}
