@@ -1,4 +1,4 @@
 mysql_host: 'localhost'
 mysql_user: 'root'
-mysql_password: 'Bursa2022'
+mysql_password: ''
 mysql_db: 'portfolio_db'
